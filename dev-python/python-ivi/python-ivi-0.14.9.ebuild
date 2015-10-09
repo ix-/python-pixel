@@ -3,11 +3,11 @@
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
-
+PYTHON_RESTRICTED_ABIS="*-jython *-pypy-*"
 
 inherit distutils
 
-GITHUB_USER="${PN}"
+GITHUB_USER="python-ivi"
 GITHUB_PROJECT="${PN}"
 GITHUB_TAG="v0.14.9"
 
@@ -18,8 +18,13 @@ SRC_URI="https://github.com/$GITHUB_USER/$GITHUB_PROJECT/archive/${GITHUB_TAG}.t
 LICENSE="MIT"
 SLOT="0"
 KEYWORDS="amd64"
-IUSE=""
+IUSE="gpib pyvisa serial usbtmc vxi11"
 
 DOCS="README.md"
-DEPEND="$(python_abi_depend >=dev-python/numpy-1.8.2-r1000)"
-RDEPEND="${DEPEND}"
+RDEPEND="$(python_abi_depend dev-python/numpy)
+serial? ( $(python_abi_depend dev-python/pyserial) )
+gpib? ( $(python_abi_depend sci-libs/linux-gpib) )
+pyvisa? ( $(python_abi_depend dev-python/pyvisa) )
+usbtmc? ( $(python_abi_depend dev-python/python-usbtmc) )
+vxi11? ( $(python_abi_depend dev-python/python-vxi11) )"
+DEPEND="${RDEPEND}"
