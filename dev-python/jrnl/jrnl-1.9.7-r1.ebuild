@@ -1,11 +1,11 @@
 # Copyright 1999-2015 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
-PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="*-jython *-pypy-*"
+EAPI=5
 
-inherit distutils
+PYTHON_COMPAT=( python2_7 python3_{3,4} )
+
+inherit distutils-r1
 
 GITHUB_USER="maebert"
 GITHUB_PROJECT="${PN}"
@@ -18,8 +18,21 @@ SRC_URI="https://github.com/$GITHUB_USER/$GITHUB_PROJECT/archive/${GITHUB_TAG}.t
 LICENSE="MIT"
 SLOT="0"
 KEYWORDS="amd64"
-IUSE=""
+IUSE="doc"
 
-DOCS="README.md"
 RDEPEND=""
 DEPEND="${RDEPEND}"
+
+DOCS="README.md"
+
+python_compile_all() {
+	if use doc; then
+		sphinx-build -b html -c doc/ \
+			doc/ doc/html || die "docs build failed"
+	fi
+}
+
+python_install_all() {
+	use doc && HTML_DOCS=( doc/html/. )
+	distutils-r1_python_install_all
+}
